@@ -12,7 +12,7 @@ import javax.swing.*;
  */
 public class EliminationGUI extends JFrame implements ActionListener
 {
-	//Instance variables
+	//Instance Variables
 	private int die1 = 6;
 	private int die2 = 6;
 	private int lowestScore = 78;
@@ -29,7 +29,8 @@ public class EliminationGUI extends JFrame implements ActionListener
 	private JPanel panelWest = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 5));
 	private JPanel panelCenter = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
 	private JPanel panelEast = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 5));
-	private JPanel panelSouth = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
+	private JPanel panelSouth1 = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
+	private JPanel panelSouth2 = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
 	
 	//JButtons
 	private JButton btn1 = new JButton("1");
@@ -65,13 +66,13 @@ public class EliminationGUI extends JFrame implements ActionListener
 	private JRadioButton rdoGray = new JRadioButton("Gray", false);
 	private JRadioButton rdoYellow = new JRadioButton("Yellow", false);
 	
-	//Constructor
+	//Default Constructor
 	public EliminationGUI(String title, boolean visible) {
 		super(title);
 		setSize(690, 270);
 		setResizable(false);
 		initUserInterface();
-		setVisible(visible); //<==Must be placed at the end to render JFrame components
+		setVisible(visible); //<== Must be added last to render JFrame components correctly
 	}
 	
 	//Methods
@@ -80,7 +81,7 @@ public class EliminationGUI extends JFrame implements ActionListener
 		//set new border layout
 		setLayout(new BorderLayout());
 		
-		//Add elements to south panel
+		//Add components to north panel
 		panelNorth.add(lblDiceRoll);
 		panelNorth.add(lblDie1);
 		panelNorth.add(lblDie2);
@@ -109,13 +110,14 @@ public class EliminationGUI extends JFrame implements ActionListener
 		panelCenter.add(btn11);
 		panelCenter.add(btn12);
 		
+		//Add components to south panel
+		//
 		
 		//Add elements to JFrame
 		add(panelNorth, BorderLayout.NORTH);
 		add(panelEast, BorderLayout.EAST);
 		add(panelCenter, BorderLayout.CENTER);
 		add(panelWest, BorderLayout.WEST);
-		
 	}
 
 	@Override
