@@ -2,6 +2,7 @@ package edu.seminolestate.elimination;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
 import javax.swing.*;
 
 /**
@@ -15,10 +16,13 @@ public class EliminationGUI extends JFrame implements ActionListener
 	//Instance Variables
 	private int die1 = 6;
 	private int die2 = 6;
+	private int choiceCount = 0;
 	private int lowestScore = 78;
 	private int currentScore = 78;
+	private boolean buttonsEnabled = false;
 	
 	//Constants
+	private static final int MAX_ATTEMPTS = 2;
 	private static final String PLAY_RULES = "The object of Elimination is to eliminate as many of the numbered buttons to achieve \n"
 			+ "as low a score as possible. Press \'Roll\' to roll the dice, then press the corresponding \n"
 			+ "number buttons whether choosing the individual die values or the sum of the die values.";
@@ -34,15 +38,15 @@ public class EliminationGUI extends JFrame implements ActionListener
 	private JPanel pnlSouthBtm = new JPanel();
 	
 	//JButtons
-	private JButton btn1 = new JButton("1");
-	private JButton btn2 = new JButton("2");
-	private JButton btn3 = new JButton("3");
-	private JButton btn4 = new JButton("4");
-	private JButton btn5 = new JButton("5");
-	private JButton btn6 = new JButton("6");
-	private JButton btn7 = new JButton("7");
-	private JButton btn8 = new JButton("8");
-	private JButton btn9 = new JButton("9");
+	private JButton btn01 = new JButton("1");
+	private JButton btn02 = new JButton("2");
+	private JButton btn03 = new JButton("3");
+	private JButton btn04 = new JButton("4");
+	private JButton btn05 = new JButton("5");
+	private JButton btn06 = new JButton("6");
+	private JButton btn07 = new JButton("7");
+	private JButton btn08 = new JButton("8");
+	private JButton btn09 = new JButton("9");
 	private JButton btn10 = new JButton("10");
 	private JButton btn11 = new JButton("11");
 	private JButton btn12 = new JButton("12");
@@ -53,14 +57,14 @@ public class EliminationGUI extends JFrame implements ActionListener
 	
 	//JLabels
 	private JLabel lblDiceRoll = new JLabel("Dice Roll: ");
-	private JLabel lblDie1 = new JLabel(String.format("%,d", die1));
-	private JLabel lblDie2 = new JLabel(String.format("%,d", die2));
+	private JLabel lblDie1 = new JLabel("6");
+	private JLabel lblDie2 = new JLabel("6");
 	//
 	private JLabel lblCurrentScore = new JLabel("Current Score");
-	private JLabel lblCurrentScoreNum = new JLabel(String.format("%,d", currentScore));
+	private JLabel lblCurrentScoreNum = new JLabel("78");
 	//
 	private JLabel lblLowScore = new JLabel("Lowest Score");
-	private JLabel lblLowScoreNum = new JLabel(String.format("%,d", lowestScore));
+	private JLabel lblLowScoreNum = new JLabel("78");
 	
 	//JRadioButtons
 	private JRadioButton rdoWhite = new JRadioButton("White", false);
@@ -88,7 +92,6 @@ public class EliminationGUI extends JFrame implements ActionListener
 	//Methods
 	
 	private void initUserInterface() {
-		
 		//set new border layout for JFrame
 		setLayout(new BorderLayout());
 		
@@ -119,18 +122,44 @@ public class EliminationGUI extends JFrame implements ActionListener
 		//Add components to center panel
 		pnlCenter.setLayout(new GridLayout(2, 6));
 		pnlCenter.setPreferredSize(new Dimension(450,200));
-		pnlCenter.add(btn1);
-		pnlCenter.add(btn2);
-		pnlCenter.add(btn3);
-		pnlCenter.add(btn4);
-		pnlCenter.add(btn5);
-		pnlCenter.add(btn6);
-		pnlCenter.add(btn7);
-		pnlCenter.add(btn8);
-		pnlCenter.add(btn9);
+		pnlCenter.add(btn01);
+		pnlCenter.add(btn02);
+		pnlCenter.add(btn03);
+		pnlCenter.add(btn04);
+		pnlCenter.add(btn05);
+		pnlCenter.add(btn06);
+		pnlCenter.add(btn07);
+		pnlCenter.add(btn08);
+		pnlCenter.add(btn09);
 		pnlCenter.add(btn10);
 		pnlCenter.add(btn11);
 		pnlCenter.add(btn12);
+		//
+		//Add action listeners and tool tips to number buttons
+		btn01.addActionListener(this);
+		btn01.setToolTipText("Click to use the value on the button.");
+		btn02.addActionListener(this);
+		btn02.setToolTipText("Click to use the value on the button.");
+		btn03.addActionListener(this);
+		btn03.setToolTipText("Click to use the value on the button.");
+		btn04.addActionListener(this);
+		btn04.setToolTipText("Click to use the value on the button.");
+		btn05.addActionListener(this);
+		btn05.setToolTipText("Click to use the value on the button.");
+		btn06.addActionListener(this);
+		btn06.setToolTipText("Click to use the value on the button.");
+		btn07.addActionListener(this);
+		btn07.setToolTipText("Click to use the value on the button.");
+		btn08.addActionListener(this);
+		btn08.setToolTipText("Click to use the value on the button.");
+		btn09.addActionListener(this);
+		btn09.setToolTipText("Click to use the value on the button.");
+		btn10.addActionListener(this);
+		btn10.setToolTipText("Click to use the value on the button.");
+		btn11.addActionListener(this);
+		btn11.setToolTipText("Click to use the value on the button.");
+		btn12.addActionListener(this);
+		btn12.setToolTipText("Click to use the value on the button.");
 		
 		//Add components to top of south panel
 		pnlSouthTop.setLayout(new BoxLayout(pnlSouthTop, BoxLayout.LINE_AXIS));
@@ -145,6 +174,7 @@ public class EliminationGUI extends JFrame implements ActionListener
 		//
 		pnlSouthBtm.add(btnRules);
 		btnRules.addActionListener(this);
+		btnRules.setToolTipText("Click to Show Rules.");
 		//
 		pnlSouthBtm.add(btnRoll);
 		btnRoll.addActionListener(this);
@@ -152,6 +182,7 @@ public class EliminationGUI extends JFrame implements ActionListener
 		//
 		pnlSouthBtm.add(btnReset);
 		btnReset.addActionListener(this);
+		btnReset.setToolTipText("Click to Reset Game.");
 		btnReset.setEnabled(false);
 		
 		//Add top and bottom panels to south panel
@@ -170,63 +201,190 @@ public class EliminationGUI extends JFrame implements ActionListener
 		disableGameButtons();
 	}
 	
+	//Show message with rules information
 	private void showGameRules(){
 		JOptionPane.showMessageDialog(null, PLAY_RULES, "Rules For Playing", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
+	//Disable all number buttons
 	private void disableGameButtons(){
-		btn1.setEnabled(false);
-		btn2.setEnabled(false);
-		btn3.setEnabled(false);
-		btn4.setEnabled(false);
-		btn5.setEnabled(false);
-		btn6.setEnabled(false);
-		btn7.setEnabled(false);
-		btn8.setEnabled(false);
-		btn9.setEnabled(false);
+		btn01.setEnabled(false);
+		btn02.setEnabled(false);
+		btn03.setEnabled(false);
+		btn04.setEnabled(false);
+		btn05.setEnabled(false);
+		btn06.setEnabled(false);
+		btn07.setEnabled(false);
+		btn08.setEnabled(false);
+		btn09.setEnabled(false);
 		btn10.setEnabled(false);
 		btn11.setEnabled(false);
 		btn12.setEnabled(false);
+		buttonsEnabled = false;
 	}
 	
+	//Enable all number buttons
 	private void enableGameButtons(){
-		btn1.setEnabled(true);
-		btn2.setEnabled(true);
-		btn3.setEnabled(true);
-		btn4.setEnabled(true);
-		btn5.setEnabled(true);
-		btn6.setEnabled(true);
-		btn7.setEnabled(true);
-		btn8.setEnabled(true);
-		btn9.setEnabled(true);
+		btn01.setEnabled(true);
+		btn02.setEnabled(true);
+		btn03.setEnabled(true);
+		btn04.setEnabled(true);
+		btn05.setEnabled(true);
+		btn06.setEnabled(true);
+		btn07.setEnabled(true);
+		btn08.setEnabled(true);
+		btn09.setEnabled(true);
 		btn10.setEnabled(true);
 		btn11.setEnabled(true);
 		btn12.setEnabled(true);
+		buttonsEnabled = true;
 	}
-
+	
+	//Roll a die
+	private int rollTheDie(){
+		Random rand = new Random();
+		return rand.nextInt(6)+1;
+	}
+	
+	//Check if button
+	private boolean isValidNumber(int key){
+		if(choiceCount < MAX_ATTEMPTS){
+			if(die1 == die2 || die1 + die2 == key){
+				if(choiceCount == 0){
+					if(die1 == die2){
+						if((die1 + die2) == key){
+							//Reduce the current score by key amount
+							//and end turn (ends game)
+							currentScore = currentScore - key;
+							lblCurrentScoreNum.setText(String.format("%,d", currentScore));
+							choiceCount +=2;
+							
+							if(choiceCount == 2){
+								btnRoll.setEnabled(true);
+							}
+							return true;
+						}
+					} else if(die1 + die2 == key){
+						//Reduce the current score by key amount
+						//and end turn (ends game)
+						currentScore = currentScore - key;
+						lblCurrentScoreNum.setText(String.format("%,d", currentScore));
+						choiceCount +=2;
+						
+						if(choiceCount == 2){
+							btnRoll.setEnabled(true);
+						}
+						return true;
+					}
+				}
+			} else if(die1 == key || die2 == key){
+				//Reduce the current score by key amount 
+				//and end turn (one turn left)
+				currentScore = currentScore - key;
+				lblCurrentScoreNum.setText(String.format("%,d", currentScore));
+				choiceCount +=1;
+				
+				if(choiceCount == 2){
+					btnRoll.setEnabled(true);
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
-		
 		if(source instanceof JButton){
-			if(source == btnRules){
+			if(source == btn01){
+				if(isValidNumber(1) == true){
+					btn01.setEnabled(false);
+				}
+			} else if(source == btn02){
+				if(isValidNumber(2) == true){
+					btn02.setEnabled(false);
+				}
+			} else if(source == btn03){
+				if(isValidNumber(3) == true){
+					btn03.setEnabled(false);
+				}
+			} else if(source == btn04){
+				if(isValidNumber(4) == true){
+					btn04.setEnabled(false);
+				}
+			} else if(source == btn05){
+				if(isValidNumber(5) == true){
+					btn05.setEnabled(false);
+				}
+			} else if(source == btn06){
+				if(isValidNumber(6) == true){
+					btn06.setEnabled(false);
+				}
+			} else if(source == btn07){
+				if(isValidNumber(7) == true){
+					btn07.setEnabled(false);
+				}
+			} else if(source == btn08){
+				if(isValidNumber(8) == true){
+					btn08.setEnabled(false);
+				}
+			} else if(source == btn09){
+				if(isValidNumber(9) == true){
+					btn09.setEnabled(false);
+				}
+			} else if(source == btn10){
+				if(isValidNumber(10) == true){
+					btn10.setEnabled(false);
+				}
+			} else if(source == btn11){
+				if(isValidNumber(11) == true){
+					btn11.setEnabled(false);
+				}
+			} else if(source == btn12){
+				if(isValidNumber(12) == true){
+					btn12.setEnabled(false);
+				}
+			} else if(source == btnRules){
 				showGameRules();
-			}else if(source == btnRoll){
-				enableGameButtons();
-				btnReset.setEnabled(true);
-				//lblDie1.setText(String.format("%,d", Math.rint(die1)));
-				//lblDie2.setText(String.format("%,d", Math.rint(die2)));
-			}else if(source == btnReset){
-				lblLowScoreNum.setText(String.format("%,d", lowestScore));
-				lblCurrentScoreNum.setText(String.format("%,d", currentScore));
-				lblDie1.setText(String.format("%,d", 6));
-				lblDie2.setText(String.format("%,d", 6));
-				lowestScore = 78;
-				currentScore = 78;
+			} else if(source == btnRoll){
+				//Disable button
+				btnRoll.setEnabled(false);
+				
+				//Check if the number buttons are enabled, 
+				//enable them if they're not enabled
+				if(buttonsEnabled == false){
+					enableGameButtons();
+					btnReset.setEnabled(true);
+				}
+				
+				//Roll the dice and show results
+				die1 = rollTheDie();
+				lblDie1.setText(String.format("%,d", die1));
+				//
+				die2 = rollTheDie();
+				lblDie2.setText(String.format("%,d", die2));
+				
+				//Reset selection count to 0 if not set to 0
+				if(choiceCount != 0){
+					choiceCount = 0;
+				}
+			} else if(source == btnReset){
+				//Reset values
+				lblDie1.setText("6");
+				lblDie2.setText("6");
+				lblCurrentScoreNum.setText("78");
+				
+				//Reset buttons state
 				disableGameButtons();
+				btnRoll.setEnabled(true);
 				btnReset.setEnabled(false);
+				
+				//Replace current lower score with new lower score if achieved
+				if(currentScore < lowestScore){
+					lblLowScoreNum.setText(String.format("%,d", currentScore));
+				}
 			}
 		}
 	}
-	
 }
