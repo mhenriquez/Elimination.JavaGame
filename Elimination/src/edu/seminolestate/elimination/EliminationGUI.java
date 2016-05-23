@@ -71,13 +71,18 @@ public class EliminationGUI extends JFrame implements ActionListener
 	private JRadioButton rdoGray = new JRadioButton("Gray", false);
 	private JRadioButton rdoYellow = new JRadioButton("Yellow", false);
 	
+	//Fonts
+	Font font1 = new Font("Serif", Font.BOLD, 15);
+	Font font2 = new Font("Arial", Font.ITALIC, 12);
+	Font font3 = new Font("Arial", Font.BOLD, 23);
+	
 	//Default Constructor
 	public EliminationGUI(String title, boolean visible) {
 		super(title);
 		
 		//Set size and lock it
-		setSize(720, 250);
-		setResizable(false);
+		setSize(779, 320);
+		//setResizable(false);
 		
 		//Center window to screen
 		setLocationRelativeTo(null);
@@ -86,7 +91,10 @@ public class EliminationGUI extends JFrame implements ActionListener
 		initUserInterface();
 		
 		//Render JFrame
-		setVisible(visible); //<== Must be added last to render JFrame components correctly
+		setVisible(visible); //<== Must be applied after UI is initialized to render components
+		
+		//Set focus to roll button
+		btnRoll.requestFocusInWindow(); //<== Must be applied after JFrame is rendered (visible)
 	}
 	
 	//Methods
@@ -103,25 +111,36 @@ public class EliminationGUI extends JFrame implements ActionListener
 		
 		//Add components to north panel
 		pnlNorth.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
+		pnlNorth.setBorder(BorderFactory.createTitledBorder(""));
 		pnlNorth.add(lblDiceRoll);
 		pnlNorth.add(lblDie1);
+		lblDie1.setFont(font3);
 		pnlNorth.add(lblDie2);
+		lblDie2.setFont(font3);
 		
 		//Add components to west panel
 		pnlWest.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 20));
+		pnlWest.setBorder(BorderFactory.createTitledBorder(""));
 		pnlWest.setPreferredSize(new Dimension(120,200));
 		pnlWest.add(lblLowScore);
+		lblLowScore.setFont(font1);
 		pnlWest.add(lblLowScoreNum);
+		lblLowScoreNum.setFont(font3);
 		
 		//Add components to east panel
 		pnlEast.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 20));
+		pnlEast.setBorder(BorderFactory.createTitledBorder(""));
 		pnlEast.setPreferredSize(new Dimension(120,200));
 		pnlEast.add(lblCurrentScore);
+		lblCurrentScore.setFont(font1);
 		pnlEast.add(lblCurrentScoreNum);
+		lblCurrentScoreNum.setFont(font3);
 		
 		//Add components to center panel
-		pnlCenter.setLayout(new GridLayout(2, 6));
-		pnlCenter.setPreferredSize(new Dimension(450,200));
+		pnlCenter.setLayout(new GridLayout(2,6));
+		pnlCenter.setPreferredSize(new Dimension(430,0));
+		pnlCenter.setBorder(BorderFactory.createTitledBorder(""));
+		//Add buttons
 		pnlCenter.add(btn01);
 		pnlCenter.add(btn02);
 		pnlCenter.add(btn03);
@@ -163,31 +182,37 @@ public class EliminationGUI extends JFrame implements ActionListener
 		
 		//Add components to top of south panel
 		pnlSouthTop.setLayout(new BoxLayout(pnlSouthTop, BoxLayout.LINE_AXIS));
+		pnlSouthTop.setBorder(BorderFactory.createTitledBorder("Background Color"));
+		pnlSouthTop.add(Box.createRigidArea(new Dimension(50,40)));
 		pnlSouthTop.add(rdoWhite);
-		pnlSouthTop.add(Box.createRigidArea(new Dimension(100,43)));
+		pnlSouthTop.add(Box.createRigidArea(new Dimension(100,0)));
 		pnlSouthTop.add(rdoGray);
-		pnlSouthTop.add(Box.createRigidArea(new Dimension(100,43)));
+		pnlSouthTop.add(Box.createRigidArea(new Dimension(100,0)));
 		pnlSouthTop.add(rdoYellow);
+		pnlSouthTop.add(Box.createRigidArea(new Dimension(50,40)));
 		
 		//Add components to bottom of south panel
 		pnlSouthBtm.setLayout(new BoxLayout(pnlSouthBtm, BoxLayout.LINE_AXIS));
-		//
+		pnlSouthBtm.add(Box.createRigidArea(new Dimension(0,50)));
+		//Rules button
 		pnlSouthBtm.add(btnRules);
 		btnRules.addActionListener(this);
 		btnRules.setToolTipText("Click to Show Rules.");
-		//
+		//Roll button
 		pnlSouthBtm.add(btnRoll);
 		btnRoll.addActionListener(this);
 		btnRoll.setToolTipText("Click to Roll Dice.");
-		//
+		//Reset button
 		pnlSouthBtm.add(btnReset);
 		btnReset.addActionListener(this);
 		btnReset.setToolTipText("Click to Reset Game.");
 		btnReset.setEnabled(false);
+		btnReset.setFont(font2);
 		
 		//Add top and bottom panels to south panel
 		pnlSouth.setLayout(new BoxLayout(pnlSouth, BoxLayout.PAGE_AXIS));
-		pnlSouth.setPreferredSize(new Dimension(0,80));
+		pnlSouth.setBorder(BorderFactory.createTitledBorder(""));
+		pnlSouth.setPreferredSize(new Dimension(0,120));
 		pnlSouth.add(pnlSouthTop);
 		pnlSouth.add(pnlSouthBtm);
 		
@@ -198,6 +223,7 @@ public class EliminationGUI extends JFrame implements ActionListener
 		add(pnlWest, BorderLayout.WEST);
 		add(pnlSouth, BorderLayout.SOUTH);
 		
+		//Start with number buttons disabled
 		disableGameButtons();
 	}
 	
@@ -351,6 +377,11 @@ public class EliminationGUI extends JFrame implements ActionListener
 				//Disable button
 				btnRoll.setEnabled(false);
 				
+				//Reset selection count to 0 if not set to 0
+				if(choiceCount != 0){
+					choiceCount = 0;
+				}
+				
 				//Check if the number buttons are enabled, 
 				//enable them if they're not enabled
 				if(buttonsEnabled == false){
@@ -361,28 +392,34 @@ public class EliminationGUI extends JFrame implements ActionListener
 				//Roll the dice and show results
 				die1 = rollTheDie();
 				lblDie1.setText(String.format("%,d", die1));
-				//
 				die2 = rollTheDie();
 				lblDie2.setText(String.format("%,d", die2));
 				
-				//Reset selection count to 0 if not set to 0
-				if(choiceCount != 0){
-					choiceCount = 0;
-				}
+				//Set focus on reset button
+				btnReset.requestFocusInWindow();
+				
 			} else if(source == btnReset){
-				//Reset values
-				lblDie1.setText("6");
-				lblDie2.setText("6");
-				lblCurrentScoreNum.setText("78");
-				
-				//Reset buttons state
-				disableGameButtons();
-				btnRoll.setEnabled(true);
-				btnReset.setEnabled(false);
-				
-				//Replace current lower score with new lower score if achieved
-				if(currentScore < lowestScore){
-					lblLowScoreNum.setText(String.format("%,d", currentScore));
+				//Ask user if they want to end game
+				int dialogResult = JOptionPane.showConfirmDialog(null, "Do you really want to start a new game?", "", JOptionPane.YES_NO_OPTION);
+				if(dialogResult == JOptionPane.YES_OPTION){
+					
+					//Reset label values
+					lblDie1.setText("6");
+					lblDie2.setText("6");
+					lblCurrentScoreNum.setText("78");
+					
+					//Reset buttons state
+					disableGameButtons();
+					btnRoll.setEnabled(true);
+					btnReset.setEnabled(false);
+					
+					//If achieved: Replace current low score with new lower score
+					if(currentScore < lowestScore){
+						lblLowScoreNum.setText(String.format("%,d", currentScore));
+					}
+					
+					//Set focus on roll button
+					btnRoll.requestFocusInWindow();
 				}
 			}
 		}

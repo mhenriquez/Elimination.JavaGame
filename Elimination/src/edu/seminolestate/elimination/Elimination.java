@@ -10,7 +10,7 @@ import javax.swing.JFrame;
  */
 public class Elimination {
 	public static void main(String[] args) {
-		EliminationGUI window = new EliminationGUI("Elimination Game", true);
+		EliminationGUI window = new EliminationGUI("Elimination", true);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 }
