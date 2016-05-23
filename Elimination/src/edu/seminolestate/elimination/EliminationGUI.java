@@ -82,7 +82,7 @@ public class EliminationGUI extends JFrame implements ActionListener
 		
 		//Set size and lock it
 		setSize(779, 320);
-		//setResizable(false);
+		setResizable(false);
 		
 		//Center window to screen
 		setLocationRelativeTo(null);
@@ -102,12 +102,6 @@ public class EliminationGUI extends JFrame implements ActionListener
 	private void initUserInterface() {
 		//set new border layout for JFrame
 		setLayout(new BorderLayout());
-		
-		//ButtonGroup
-		ButtonGroup BtnGroup = new ButtonGroup();
-		BtnGroup.add(rdoWhite);
-		BtnGroup.add(rdoGray);
-		BtnGroup.add(rdoYellow);
 		
 		//Add components to north panel
 		pnlNorth.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
@@ -180,6 +174,12 @@ public class EliminationGUI extends JFrame implements ActionListener
 		btn12.addActionListener(this);
 		btn12.setToolTipText("Click to use the value on the button.");
 		
+		//RadioButton Group
+		ButtonGroup rdoButtonGroup = new ButtonGroup();
+		rdoButtonGroup.add(rdoWhite);
+		rdoButtonGroup.add(rdoGray);
+		rdoButtonGroup.add(rdoYellow);
+				
 		//Add components to top of south panel
 		pnlSouthTop.setLayout(new BoxLayout(pnlSouthTop, BoxLayout.LINE_AXIS));
 		pnlSouthTop.setBorder(BorderFactory.createTitledBorder("Background Color"));
@@ -272,7 +272,7 @@ public class EliminationGUI extends JFrame implements ActionListener
 		return rand.nextInt(6)+1;
 	}
 	
-	//Check if button
+	//Check if button clicked matches any of the dice
 	private boolean isValidNumber(int key){
 		if(choiceCount < MAX_ATTEMPTS){
 			if(die1 == die2 || die1 + die2 == key){
@@ -374,8 +374,14 @@ public class EliminationGUI extends JFrame implements ActionListener
 			} else if(source == btnRules){
 				showGameRules();
 			} else if(source == btnRoll){
-				//Disable button
-				btnRoll.setEnabled(false);
+				
+				//TODO:
+				//Check if there are any moves available
+				//private void checkMovesAvailable(int die1, int die2){}
+				//JOptionPane.showMessageDialog(null, "Game Over Dude, Game Over", "Game Over", JOptionPane.INFORMATION_MESSAGE);
+				
+				//int btn1 = Integer.parseInt(btn01.getText());
+				
 				
 				//Reset selection count to 0 if not set to 0
 				if(choiceCount != 0){
@@ -395,6 +401,9 @@ public class EliminationGUI extends JFrame implements ActionListener
 				die2 = rollTheDie();
 				lblDie2.setText(String.format("%,d", die2));
 				
+				//Disable button
+				btnRoll.setEnabled(false);
+				
 				//Set focus on reset button
 				btnReset.requestFocusInWindow();
 				
@@ -403,20 +412,22 @@ public class EliminationGUI extends JFrame implements ActionListener
 				int dialogResult = JOptionPane.showConfirmDialog(null, "Do you really want to start a new game?", "", JOptionPane.YES_NO_OPTION);
 				if(dialogResult == JOptionPane.YES_OPTION){
 					
-					//Reset label values
-					lblDie1.setText("6");
-					lblDie2.setText("6");
-					lblCurrentScoreNum.setText("78");
-					
 					//Reset buttons state
 					disableGameButtons();
 					btnRoll.setEnabled(true);
 					btnReset.setEnabled(false);
 					
+					//Reset label values
+					lblDie1.setText("6");
+					lblDie2.setText("6");
+					lblCurrentScoreNum.setText("78");
+					
 					//If achieved: Replace current low score with new lower score
 					if(currentScore < lowestScore){
 						lblLowScoreNum.setText(String.format("%,d", currentScore));
 					}
+					//Reset current score
+					currentScore = 78;
 					
 					//Set focus on roll button
 					btnRoll.requestFocusInWindow();
